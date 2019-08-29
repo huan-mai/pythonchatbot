@@ -12,7 +12,7 @@ import pickle
 
 nltk.download('punkt')
 
-with open("hintents.json") as file:
+with open("intents.json") as file:
     data = json.load(file)
 
 try:
