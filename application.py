@@ -1,6 +1,7 @@
 import skype_chatbot
 import json
 from flask import Flask, request
+from train import answer
 app = Flask(__name__)
 
 app_id = "ed163f1f-e7ce-4940-bda9-e5e1987aab72" 
@@ -24,7 +25,7 @@ def webhook():
             sender = data['conversation']['id']
             text = data['text']
 
-            bot.send_message(bot_id, bot_name, recipient, service, sender, 'You said: {}'.format(text))
+            bot.send_message(bot_id, bot_name, recipient, service, sender, 'You said: {} and your answer: {}'.format(text, answer(text)))
 
         except Exception as e:
             print(e)
