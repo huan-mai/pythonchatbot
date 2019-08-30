@@ -8,6 +8,7 @@ app_id = "ed163f1f-e7ce-4940-bda9-e5e1987aab72"
 app_secret = "B3ZRkqum-a3WdU3*grM2NInP@FH*ay8z" 
 
 bot = skype_chatbot.SkypeBot(app_id, app_secret)
+ml = Train()
 
 @app.route("/")
 def hello():
@@ -25,11 +26,18 @@ def webhook():
             sender = data['conversation']['id']
             text = data['text']
 
-            t = Train()
-            t.start()
-            bot.send_message(bot_id, bot_name, recipient, service, sender, 'You said: "{}" and my answer: "{}"'.format(text, t.answer(text)))
+            ml.start()
+            bot.send_message(bot_id, bot_name, recipient, service, sender, 'You said: "{}" and my answer: "{}"'.format(text, ml.answer(text)))
 
         except Exception as e:
             print(e)
 
     return 'Code: 200'
+
+@app.route('/api/train', methods=['GET'])
+def train():
+    try:
+        ml.training()
+        return "Train is completed"
+    except:
+        return "Traing is failed"
