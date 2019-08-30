@@ -12,7 +12,7 @@ import pickle
 
 nltk.download('punkt')
 
-with open("hintents.json") as file:
+with open("intents.json") as file:
     data = json.load(file)
 
 try:
@@ -78,11 +78,11 @@ net = tflearn.regression(net)
 
 model = tflearn.DNN(net)
 
-#try:
-#    model.load("model.tflearn")
-#except:
-model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
-model.save("model.tflearn")
+try:
+    model.load("model.tflearn")
+except:
+    model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
+    model.save("model.tflearn")
 
 def bag_of_words(s, words):
     bag = [0 for _ in range(len(words))]
@@ -102,7 +102,7 @@ def answer(inp):
     results = model.predict([bag_of_words(inp, words)])
     results_index = numpy.argmax(results)
     tag = labels[results_index]
-
+    responses = ["Sorry"]
     for tg in data["intents"]:
         if tg['tag'] == tag:
             responses = tg['responses']
