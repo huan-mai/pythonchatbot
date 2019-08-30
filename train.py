@@ -81,7 +81,8 @@ class Train(object):
 
         self.model = tflearn.DNN(net)
         self.model.fit(self.training, self.output, n_epoch=1000, batch_size=8, show_metric=True)
-        self.model.save("self.model.tflearn")
+        print("saving model.tflearn")
+        self.model.save("model.tflearn")
 
     def bag_of_words(self, s):
         bag = [0 for _ in range(len(self.words))]
@@ -110,7 +111,8 @@ class Train(object):
         net = tflearn.fully_connected(net, len(self.output[0]), activation="softmax")
         net = tflearn.regression(net)
         self.model = tflearn.DNN(net)
-        self.model.load("self.model.tflearn")
+        self.model.load("model.tflearn")
+        print("loaded model.tflearn")
 
     def answer(self, inp):
         print(inp)
