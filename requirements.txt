@@ -1,6 +1,6 @@
 skype_chatbot
-nltk
 numpy
 tensorflow
 json
 pickle
+nltk
