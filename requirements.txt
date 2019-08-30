@@ -1,6 +1,1 @@
-nltk
-numpy
-tensorflow
-random
-json
-pickle
+skype_chatbot
