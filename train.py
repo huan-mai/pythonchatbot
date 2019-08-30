@@ -10,8 +10,6 @@ import random
 import json
 import pickle
 
-nltk.download('punkt')
-
 class Train(object):
     words = []
     labels = []
@@ -19,6 +17,7 @@ class Train(object):
     docs_y = []
 
     def training(self):
+        nltk.download('punkt')
         with open("intents.json") as file:
             self.data = json.load(file)
 
