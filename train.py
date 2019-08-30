@@ -18,7 +18,7 @@ class Train(object):
     docs_x = []
     docs_y = []
 
-    def start(self):
+    def training(self):
         with open("intents.json") as file:
             self.data = json.load(file)
 
@@ -80,10 +80,6 @@ class Train(object):
         net = tflearn.regression(net)
 
         self.model = tflearn.DNN(net)
-
-        # try:
-        #     self.model.load("self.model.tflearn")
-        # except:
         self.model.fit(self.training, self.output, n_epoch=1000, batch_size=8, show_metric=True)
         self.model.save("self.model.tflearn")
 
@@ -100,6 +96,21 @@ class Train(object):
                 
         return numpy.array(bag)
 
+    def start(self):
+        with open("intents.json") as file:
+            self.data = json.load(file)
+
+        with open("data.pickle", "rb") as f:
+            self.words, self.labels, self.training, self.output = pickle.load(f)
+        tensorflow.reset_default_graph()
+
+        net = tflearn.input_data(shape=[None, len(self.training[0])])
+        net = tflearn.fully_connected(net, 8)
+        net = tflearn.fully_connected(net, 8)
+        net = tflearn.fully_connected(net, len(self.output[0]), activation="softmax")
+        net = tflearn.regression(net)
+        self.model = tflearn.DNN(net)
+        self.model.load("self.model.tflearn")
 
     def answer(self, inp):
         print(inp)
