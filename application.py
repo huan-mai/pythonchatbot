@@ -1,7 +1,7 @@
 import skype_chatbot
 import json
 from flask import Flask, request
-import chat
+from main import chat
 app = Flask(__name__)
 
 app_id = "ed163f1f-e7ce-4940-bda9-e5e1987aab72" 
