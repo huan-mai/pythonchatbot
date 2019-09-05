@@ -21,56 +21,52 @@ class Train(object):
         with open("intents.json") as file:
             self.data = json.load(file)
 
-        try:
-            with open("data.pickle", "rb") as f:
-                self.words, self.labels, self.training, self.output = pickle.load(f)
-        except:
+        for intent in self.data["intents"]:
+            for pattern in intent["patterns"]:
+                wrds = nltk.word_tokenize(pattern)
+                self.words.extend(wrds)
+                self.docs_x.append(wrds)
+                self.docs_y.append(intent["tag"])
 
-            for intent in self.data["intents"]:
-                for pattern in intent["patterns"]:
-                    wrds = nltk.word_tokenize(pattern)
-                    self.words.extend(wrds)
-                    docs_x.append(wrds)
-                    docs_y.append(intent["tag"])
+            if intent["tag"] not in self.labels:
+                self.labels.append(intent["tag"])
 
-                if intent["tag"] not in self.labels:
-                    self.labels.append(intent["tag"])
+        self.words = [stemmer.stem(w.lower()) for w in self.words if w != "?"]
+        self.words = sorted(list(set(self.words)))
 
-            self.words = [stemmer.stem(w.lower()) for w in self.words if w != "?"]
-            self.words = sorted(list(set(self.words)))
+        self.labels = sorted(self.labels)
 
-            self.labels = sorted(self.labels)
+        self.training = []
+        self.output = []
 
-            self.training = []
-            self.output = []
+        out_empty = [0 for _ in range(len(self.labels))]
 
-            out_empty = [0 for _ in range(len(self.labels))]
+        for x, doc in enumerate(self.docs_x):
+            bag = []
 
-            for x, doc in enumerate(docs_x):
-                bag = []
+            wrds = [stemmer.stem(w.lower()) for w in doc]
 
-                wrds = [stemmer.stem(w.lower()) for w in doc]
+            for w in self.words:
+                if w in wrds:
+                    bag.append(1)
+                else:
+                    bag.append(0)
 
-                for w in self.words:
-                    if w in wrds:
-                        bag.append(1)
-                    else:
-                        bag.append(0)
+            output_row = out_empty[:]
+            output_row[self.labels.index(self.docs_y[x])] = 1
 
-                output_row = out_empty[:]
-                output_row[self.labels.index(docs_y[x])] = 1
-
-                self.training.append(bag)
-                self.output.append(output_row)
+            self.training.append(bag)
+            self.output.append(output_row)
 
 
-            self.training = numpy.array(self.training)
-            self.output = numpy.array(self.output)
+        self.training = numpy.array(self.training)
+        self.output = numpy.array(self.output)
 
-            with open("data.pickle", "wb") as f:
-                pickle.dump((self.words, self.labels, self.training, self.output), f)
+        with open("data.pickle", "wb") as f:
+            pickle.dump((self.words, self.labels, self.training, self.output), f)
 
-        tensorflow.reset_default_graph()
+        # tensorflow.reset_default_graph()
+        tflearn.init_graph(num_cores=4, gpu_memory_fraction=0.5)
 
         net = tflearn.input_data(shape=[None, len(self.training[0])])
         net = tflearn.fully_connected(net, 8)
@@ -79,9 +75,8 @@ class Train(object):
         net = tflearn.regression(net)
 
         self.model = tflearn.DNN(net)
-        self.model.fit(self.training, self.output, n_epoch=1000, batch_size=8, show_metric=True)
-        print("saving model.tflearn")
-        self.model.save("model.tflearn")
+        self.model.fit(self.training, self.output, n_epoch=500, batch_size=8, show_metric=True)
+        self.model.save("self.model.tflearn")
 
     def bag_of_words(self, s):
         bag = [0 for _ in range(len(self.words))]
@@ -110,8 +105,7 @@ class Train(object):
         net = tflearn.fully_connected(net, len(self.output[0]), activation="softmax")
         net = tflearn.regression(net)
         self.model = tflearn.DNN(net)
-        self.model.load("model.tflearn")
-        print("loaded model.tflearn")
+        self.model.load("self.model.tflearn")
 
     def answer(self, inp):
         print(inp)
