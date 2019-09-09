@@ -1,5 +1,5 @@
 import nltk
-
+import time
 from nltk.stem.lancaster import LancasterStemmer
 stemmer = LancasterStemmer()
 
@@ -66,16 +66,20 @@ class Train(object):
             pickle.dump((self.words, self.labels, self.training, self.output), f)
 
         # tensorflow.reset_default_graph()
-        tflearn.init_graph(num_cores=4, gpu_memory_fraction=0.5)
+        tflearn.init_graph(num_cores=1, gpu_memory_fraction=0.5)
 
         net = tflearn.input_data(shape=[None, len(self.training[0])])
+        # two hidden layers with 8 neurons of each layer. This is where you can do more tuning.
         net = tflearn.fully_connected(net, 8)
         net = tflearn.fully_connected(net, 8)
+        # turn result to probability rather than a number for classification: softmax, relu, sigmoid
         net = tflearn.fully_connected(net, len(self.output[0]), activation="softmax")
+
         net = tflearn.regression(net)
+        # net = tflearn.regression(net, optimizer='sgd', learning_rate=0.01, loss='mean_square')
 
         self.model = tflearn.DNN(net)
-        self.model.fit(self.training, self.output, n_epoch=500, batch_size=8, show_metric=True)
+        self.model.fit(self.training, self.output, n_epoch=200, batch_size=12, show_metric=True)
         self.model.save("self.model.tflearn")
 
     def bag_of_words(self, s):
@@ -92,12 +96,15 @@ class Train(object):
         return numpy.array(bag)
 
     def start(self):
+        if hasattr(self, 'data'):
+            return
+
         with open("intents.json") as file:
             self.data = json.load(file)
 
         with open("data.pickle", "rb") as f:
             self.words, self.labels, self.training, self.output = pickle.load(f)
-        tensorflow.reset_default_graph()
+        tflearn.init_graph(num_cores=1)
 
         net = tflearn.input_data(shape=[None, len(self.training[0])])
         net = tflearn.fully_connected(net, 8)
@@ -108,7 +115,7 @@ class Train(object):
         self.model.load("self.model.tflearn")
 
     def answer(self, inp):
-        print(inp)
+        t = time.process_time()
         results = self.model.predict([self.bag_of_words(inp)])
         results_index = numpy.argmax(results)
         tag = self.labels[results_index]
@@ -118,5 +125,6 @@ class Train(object):
             print(tg)
             if tg['tag'] == tag:
                 responses = tg['responses']
-
+        elapsed_time = time.process_time() - t
+        print('Time To answer is {}'.format(elapsed_time))
         return random.choice(responses)
