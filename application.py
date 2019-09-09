@@ -17,6 +17,7 @@ def hello():
 def webhook():
     from train import Train
     ml = Train()
+    ml.start()
     if request.method == 'POST':
         try:
             data = json.loads(request.data)
@@ -27,13 +28,12 @@ def webhook():
             sender = data['conversation']['id']
             text = data['text']
 
-            ml.start()
             bot.send_message(bot_id, bot_name, recipient, service, sender, 'You said: "{}" and my answer: "{}"'.format(text, ml.answer(text)))
 
         except Exception as e:
             print(e)
 
-    return 'Code: 200'
+    return 'Code: 200. {}'.format(ml.answer('Hi'))
 
 @app.route('/api/train', methods=['GET'])
 def train():
