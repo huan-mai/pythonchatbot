@@ -1,16 +1,17 @@
 import skype_chatbot
+import os
 import json
 from flask import Flask, request
 app = Flask(__name__)
 
-app_id = "ed163f1f-e7ce-4940-bda9-e5e1987aab72" 
-app_secret = "B3ZRkqum-a3WdU3*grM2NInP@FH*ay8z" 
+app_id = "118ff51a-f3d7-4fc3-b47e-b6b60fb0af8b" 
+app_secret = "RWJ5HrlRe-oteY[HCfQBFZd8B]0zA1u+" 
 
 bot = skype_chatbot.SkypeBot(app_id, app_secret)
 
 @app.route("/")
 def hello():
-    return "Hello Flask, on Azure App Service for Linux"
+        return "Hello Flask, on Azure App Service for Linux {}".format(os.environ.get('APP_ID'))
 
 @app.route('/api/messages', methods=['POST', 'GET'])
 def webhook():
