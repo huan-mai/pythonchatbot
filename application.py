@@ -15,9 +15,12 @@ def hello():
 
 @app.route('/api/messages', methods=['POST', 'GET'])
 def webhook():
-    from train import Train
-    ml = Train()
-    ml.start()
+    try:
+        ml
+    except NameError:    
+        from train import Train
+        ml = Train()
+        ml.start()
     if request.method == 'POST':
         try:
             data = json.loads(request.data)
