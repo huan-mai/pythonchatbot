@@ -6,22 +6,22 @@ app = Flask(__name__)
 
 app_id = os.environ.get('APP_ID')
 app_secret = os.environ.get('APP_SECRET')
-
+MODEL_DIR = os.environ.get('MODEL_DIR')
 
 bot = skype_chatbot.SkypeBot(app_id, app_secret)
 
 @app.route("/")
 def hello():
-    return "Hello Flask, on Azure App Service for Linux {}".format(app_id)
+    return "Hello Flask, on Azure App Service for Linux {}/{}".format(app_id, app_secret)
 
 @app.route('/api/messages', methods=['POST', 'GET'])
 def webhook():
     try:
-        ml
+        ml_prediction
     except NameError:
-        from train import Train
-        ml = Train()
-        ml.start()
+        from prediction import Prediction
+        ml_prediction = Prediction('h_intents.json', MODEL_DIR)
+        ml_prediction.load_model()
     answer = ''    
     if request.method == 'POST':
         try:
@@ -33,18 +33,19 @@ def webhook():
             sender = data['conversation']['id']
             text = data['text']
 
-            bot.send_message(bot_id, bot_name, recipient, service, sender, 'You said: "{}" and my answer: "{}"'.format(text, ml.answer(text)))
+            bot.send_message(bot_id, bot_name, recipient, service, sender, 
+                'You said: "{}" and my answer: "{}"'.format(text, ml_prediction.response(text, sender)))
         except Exception as e:
             print(e)
     if request.method == 'GET':
         question = request.args.get('q');
-        answer = ml.answer(question if question else 'Hi');
+        answer = ml_prediction.response(question if question else 'Hi');
     return 'Code: 200. {}'.format(answer)
 
 @app.route('/api/train', methods=['GET'])
 def train():
     from train import Train
-    ml = Train()
+    ml = Train('h_intents.json', MODEL_DIR)
     try:
         ml.training()
         return "Train is completed"
