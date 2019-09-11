@@ -35,7 +35,7 @@ def webhook():
             text = data['text']
 
             bot.send_message(bot_id, bot_name, recipient, service, sender, 
-                'You said: "{}" and my answer: "{}"'.format(text, ml_prediction.response(text, sender)))
+                ml_prediction.response(text, sender))
         except Exception as e:
             print(e)
     if request.method == 'GET':
