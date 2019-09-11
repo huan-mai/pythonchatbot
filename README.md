@@ -4,7 +4,7 @@
 You need python 3.6 or 3.7 and pip
 
 ### How to run
-1. pip install -r requirement.txt
+1. pip install -r requirements.txt
 2. pip install flask
 3. On Mac: `FLASK_APP=application.py flask run`. On Window: `set FLASK_APP=application.py && flask run` 
 4. Then go to http://localhost:5000/api/train to train data
