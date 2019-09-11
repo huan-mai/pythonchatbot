@@ -20,3 +20,7 @@ You need python 3.7 and pip
 6. Use 'Deployment Center' and select github
 7. Select 'App Service build service'
 8. Add APP_ID and APP_SECRET to 'Configuration > Application settings > New application setting'
+
+### Troubleshooting
+1. If you get `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed` error when running `pip install` command, download the pem file from http://curl.haxx.se/ca/cacert.pem, then run the command with `--cert` parameter. Example: `pip --cert /path/to/cacert.pem install linkchecker`
+(Reference: https://stackoverflow.com/questions/25981703/pip-install-fails-with-connection-error-ssl-certificate-verify-failed-certi/26062583)
