@@ -12,13 +12,13 @@ You need python 3.6 or 3.7 and pip
 6. You can use MS Bot Framework Emulator to test it as well.
 
 ### How to deploy it to Azure
-1. Create Azure account
+1. Create Azure account. You will need valid credit card for it.
 2. Create resource group: e.g. "BotGroup"
-3. Create Bot Channels Registration
-4. get APP_ID and APP_SECRET from Bot Channels Registration's settings under Microsoft App Id.
-5. Create 'App Service' with python
-6. Use 'Deployment Center' and select github
-7. Select 'App Service build service'
-8. Add APP_ID and APP_SECRET to 'Configuration > Application settings > New application setting'
-9. Go back to Bot Channels settings and update Endpoint URL e.g. https://pythonchatbot.azurewebsites.net/api/messages
+3. Create **[Bot Channels Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0)**
+4. Get **APP_ID** and **APP_SECRET** from **Bot Channels' Settings** under Microsoft App Id.
+5. Create **App Service** with python
+6. Use **Deployment Center** and select your source code from github
+7. Select **App Service build service**
+8. Add **APP_ID** and **APP_SECRET** to **Configuration > Application settings > New application setting**
+9. Go back to **Bot Channels' Settings** and update Endpoint URL e.g. https://pythonchatbot.azurewebsites.net/api/messages
 
