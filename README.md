@@ -9,7 +9,7 @@ You need python 3.6 or 3.7 and pip
 3. On Mac: `FLASK_APP=application.py flask run`. On Window: `set FLASK_APP=application.py && flask run` 
 4. Then go to http://localhost:5000/api/train to train data
 5. http://localhost:5000/api/messages?q=Hi to test
-6. You can use MS Bot Framework Emulator to test it as well.
+6. You can use MS Bot Framework Emulator to test it as well. Use URL: http://localhost:5000/api/messages to connect if you want to test it locally.
 
 ### How to deploy it to Azure
 1. Create Azure account. You will need valid credit card for it.
