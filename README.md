@@ -1,12 +1,12 @@
 # pythonchatbot
 
 ## Requirements
-You need python 3.7 and pip
+You need python 3.6 or 3.7 and pip
 
 ### How to run
 1. pip install -r requirement.txt
 2. pip install flask
-3. FLASK_APP=application.py flask run
+3. On Mac: `FLASK_APP=application.py flask run`. On Window: `set FLASK_APP=application.py && flask run` 
 4. Then go to http://localhost:5000/api/train to train data
 5. http://localhost:5000/api/messages?q=Hi to test
 6. You can use MS Bot Framework Emulator to test it as well.
@@ -20,3 +20,5 @@ You need python 3.7 and pip
 6. Use 'Deployment Center' and select github
 7. Select 'App Service build service'
 8. Add APP_ID and APP_SECRET to 'Configuration > Application settings > New application setting'
+9. Go back to Bot Channels settings and update Endpoint URL e.g. https://pythonchatbot.azurewebsites.net/api/messages
+
