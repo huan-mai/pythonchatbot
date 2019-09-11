@@ -1,6 +1,8 @@
 import skype_chatbot
 import os
 import json
+from prediction import Prediction
+from train import Train
 from flask import Flask, request
 app = Flask(__name__)
 
@@ -20,7 +22,6 @@ def webhook():
     try:
         ml_prediction
     except NameError:
-        from prediction import Prediction
         ml_prediction = Prediction(intents_file, MODEL_DIR)
         ml_prediction.load_model()
     answer = ''    
@@ -45,7 +46,6 @@ def webhook():
 
 @app.route('/api/train', methods=['GET'])
 def train():
-    from train import Train
     ml = Train(intents_file, MODEL_DIR)
     try:
         ml.training()
