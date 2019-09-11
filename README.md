@@ -16,7 +16,7 @@ You need python 3.7 and pip
 2. Create resource group: e.g. "BotGroup"
 3. Create Bot Channels Registration
 4. get APP_ID and APP_SECRET from Bot Channels Registration's settings under Microsoft App Id.
-5. Create Python App Service
-6. Use Deployment Center and select github
-7. Select App Service build service
-8. Add APP_ID and APP_SECRET to application environment properties.
+5. Create 'App Service' with python
+6. Use 'Deployment Center' and select github
+7. Select 'App Service build service'
+8. Add APP_ID and APP_SECRET to 'Configuration > Application settings > New application setting'
