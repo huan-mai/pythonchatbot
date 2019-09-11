@@ -7,6 +7,7 @@ app = Flask(__name__)
 app_id = os.environ.get('APP_ID')
 app_secret = os.environ.get('APP_SECRET')
 MODEL_DIR = os.environ.get('MODEL_DIR')
+intents_file = "intents.json"
 
 bot = skype_chatbot.SkypeBot(app_id, app_secret)
 
@@ -20,7 +21,7 @@ def webhook():
         ml_prediction
     except NameError:
         from prediction import Prediction
-        ml_prediction = Prediction('h_intents.json', MODEL_DIR)
+        ml_prediction = Prediction(intents_file, MODEL_DIR)
         ml_prediction.load_model()
     answer = ''    
     if request.method == 'POST':
@@ -45,7 +46,7 @@ def webhook():
 @app.route('/api/train', methods=['GET'])
 def train():
     from train import Train
-    ml = Train('h_intents.json', MODEL_DIR)
+    ml = Train(intents_file, MODEL_DIR)
     try:
         ml.training()
         return "Train is completed"
