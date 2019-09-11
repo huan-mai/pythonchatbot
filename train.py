@@ -1,4 +1,5 @@
 import nltk
+nltk.download('punkt')
 import time
 from nltk.stem.lancaster import LancasterStemmer
 stemmer = LancasterStemmer()
@@ -15,9 +16,9 @@ class Train(object):
     labels = []
     docs_x = []
     docs_y = []
-
+    MODEL_DIR = os.environ.get('MODEL_DIR')
+    MODEL_DIR = MODEL_DIR if MODEL_DIR else '.'
     def training(self):
-        nltk.download('punkt')
         with open("intents.json") as file:
             self.data = json.load(file)
 
@@ -62,10 +63,10 @@ class Train(object):
         self.training = numpy.array(self.training)
         self.output = numpy.array(self.output)
 
-        with open("data.pickle", "wb") as f:
+        with open("{}/data.pickle".format(self.MODEL_DIR), "wb") as f:
             pickle.dump((self.words, self.labels, self.training, self.output), f)
 
-        # tensorflow.reset_default_graph()
+        tensorflow.reset_default_graph()
         tflearn.init_graph(num_cores=1, gpu_memory_fraction=0.5)
 
         net = tflearn.input_data(shape=[None, len(self.training[0])])
@@ -79,8 +80,8 @@ class Train(object):
         # net = tflearn.regression(net, optimizer='sgd', learning_rate=0.01, loss='mean_square')
 
         self.model = tflearn.DNN(net)
-        self.model.fit(self.training, self.output, n_epoch=200, batch_size=12, show_metric=True)
-        self.model.save("self.model.tflearn")
+        self.model.fit(self.training, self.output, n_epoch=200, batch_size=2, show_metric=True)
+        self.model.save("{}/model.tflearn".format(self.MODEL_DIR))
 
     def bag_of_words(self, s):
         bag = [0 for _ in range(len(self.words))]
@@ -88,6 +89,7 @@ class Train(object):
         s_words = nltk.word_tokenize(s)
         s_words = [stemmer.stem(word.lower()) for word in s_words]
 
+        print('questions: {}'.format(s_words));
         for se in s_words:
             for i, w in enumerate(self.words):
                 if w == se:
@@ -102,8 +104,10 @@ class Train(object):
         with open("intents.json") as file:
             self.data = json.load(file)
 
-        with open("data.pickle", "rb") as f:
+        with open("{}/data.pickle".format(self.MODEL_DIR), "rb") as f:
             self.words, self.labels, self.training, self.output = pickle.load(f)
+        
+        tensorflow.reset_default_graph()
         tflearn.init_graph(num_cores=1)
 
         net = tflearn.input_data(shape=[None, len(self.training[0])])
@@ -112,17 +116,18 @@ class Train(object):
         net = tflearn.fully_connected(net, len(self.output[0]), activation="softmax")
         net = tflearn.regression(net)
         self.model = tflearn.DNN(net)
-        self.model.load("self.model.tflearn")
+        self.model.load("{}/model.tflearn".format(self.MODEL_DIR))
 
     def answer(self, inp):
         t = time.process_time()
         results = self.model.predict([self.bag_of_words(inp)])
         results_index = numpy.argmax(results)
+        print('results_index {} of {}'.format(results, results_index))
         tag = self.labels[results_index]
         
         responses = ['Sorry']
         for tg in self.data["intents"]:
-            print(tg)
+            print('label {} in {}'.format(tag, tg['tag']))
             if tg['tag'] == tag:
                 responses = tg['responses']
         elapsed_time = time.process_time() - t
