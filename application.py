@@ -4,8 +4,8 @@ import json
 from flask import Flask, request
 app = Flask(__name__)
 
-app_id = "ed163f1f-e7ce-4940-bda9-e5e1987aab72" 
-app_secret = "B3ZRkqum-a3WdU3*grM2NInP@FH*ay8z" 
+app_id = os.environ.get('APP_ID')
+app_secret = os.environ.get('APP_SECRET')
 
 
 bot = skype_chatbot.SkypeBot(app_id, app_secret)
