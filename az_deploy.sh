@@ -13,8 +13,10 @@ az group create --location $loc --name $group
 az appservice plan create --name $webappname --location $loc --resource-group $group --sku FREE --is-linux
 
 # Create a web app.
-#az webapp create --name $webappname --resource-group $group --plan $webappname --runtime "python|3.6"
+az webapp create --name $webappname --resource-group $group --plan $webappname --runtime "python|3.6"
 
+# Configure appsettings with correct APP_ID, APP_SECRET.
+# TODO: need to get APP_ID, APP_SECRET from bot channels. Currently, please put it manually here.
 az webapp config appsettings set -g $group -n $webappname --settings APP_ID= APP_SECRET= WEBSITE_HTTPLOGGING_RETENTION_DAYS=1
 
 # Deploy code from a public GitHub repository. 
