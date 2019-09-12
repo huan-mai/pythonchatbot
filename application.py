@@ -10,6 +10,7 @@ app_id = os.environ.get('APP_ID')
 app_secret = os.environ.get('APP_SECRET')
 MODEL_DIR = os.environ.get('MODEL_DIR')
 intents_file = "intents.json"
+ml_prediction  = None
 
 bot = skype_chatbot.SkypeBot(app_id, app_secret)
 
@@ -22,7 +23,7 @@ def webhook():
     try:
         ml_prediction
     except NameError:
-        ml_prediction = Prediction(intents_file, MODEL_DIR)
+        ml_prediction = Prediction(MODEL_DIR)
         ml_prediction.load_model()
     answer = ''    
     if request.method == 'POST':
@@ -47,11 +48,12 @@ def webhook():
 @app.route('/api/train', methods=['GET'])
 def train():
     input_file = request.args.get('file');
-    intents_file = input_file if input_file else intents_file
+    intents_file = input_file if input_file else "intents.json"
     ml = Train(intents_file, MODEL_DIR)
     try:
         ml.training()
-        ml_prediction = Prediction(intents_file, MODEL_DIR)
+        ml_prediction = Prediction(MODEL_DIR)
+        ml_prediction.load_model()
         return "Train is completed"
     except Exception as e:
         return "Traing is failed {}".format(str(e))
