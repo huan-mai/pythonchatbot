@@ -1,12 +1,16 @@
 import skype_chatbot
 import os
 import json
+from prediction import Prediction
+from train import Train
 from flask import Flask, request
 app = Flask(__name__)
 
 app_id = os.environ.get('APP_ID')
 app_secret = os.environ.get('APP_SECRET')
-
+MODEL_DIR = os.environ.get('MODEL_DIR')
+intents_file = "intents.json"
+ml_prediction  = None
 
 bot = skype_chatbot.SkypeBot(app_id, app_secret)
 
@@ -17,11 +21,10 @@ def hello():
 @app.route('/api/messages', methods=['POST', 'GET'])
 def webhook():
     try:
-        ml
+        ml_prediction
     except NameError:
-        from train import Train
-        ml = Train()
-        ml.start()
+        ml_prediction = Prediction(MODEL_DIR)
+        ml_prediction.load_model()
     answer = ''    
     if request.method == 'POST':
         try:
@@ -33,20 +36,24 @@ def webhook():
             sender = data['conversation']['id']
             text = data['text']
 
-            bot.send_message(bot_id, bot_name, recipient, service, sender, 'You said: "{}" and my answer: "{}"'.format(text, ml.answer(text)))
+            bot.send_message(bot_id, bot_name, recipient, service, sender, 
+                ml_prediction.response(text, sender))
         except Exception as e:
             print(e)
     if request.method == 'GET':
         question = request.args.get('q');
-        answer = ml.answer(question if question else 'Hi');
+        answer = ml_prediction.response(question if question else 'Hi');
     return 'Code: 200. {}'.format(answer)
 
 @app.route('/api/train', methods=['GET'])
 def train():
-    from train import Train
-    ml = Train()
+    input_file = request.args.get('file');
+    intents_file = input_file if input_file else "intents.json"
+    ml = Train(intents_file, MODEL_DIR)
     try:
         ml.training()
+        ml_prediction = Prediction(MODEL_DIR)
+        ml_prediction.load_model()
         return "Train is completed"
     except Exception as e:
         return "Traing is failed {}".format(str(e))
