@@ -17,13 +17,7 @@ bot = skype_chatbot.SkypeBot(app_id, app_secret)
 
 @app.route("/")
 def hello():
-    return """
-    <h1>Hello Flask, on Azure App Service for Linux"</h1>
-    <ul>
-        <li>Go to <a href="/train.html">here</a> to train your Bot</li>
-        <li>Go to <a href="/api/messages?p=Hi">here</a> to test your Bot</li>
-    </ul>
-    """
+    return app.send_static_file('train.html')
 
 @app.route('/api/messages', methods=['POST', 'GET'])
 def webhook():
