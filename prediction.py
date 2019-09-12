@@ -1,14 +1,15 @@
+import os
+import nltk
+nltk.download('punkt')
+from nltk.stem.lancaster import LancasterStemmer
+stemmer = LancasterStemmer()
+
 import numpy
 import tflearn
 import tensorflow
 import random
 import json
 import pickle
-import nltk
-from nltk.stem.lancaster import LancasterStemmer
-
-nltk.download('punkt')
-stemmer = LancasterStemmer()
 
 ERROR_THRESHOLD = 0.25
 class Prediction(object):
@@ -17,19 +18,18 @@ class Prediction(object):
     docs_x = []
     docs_y = []
     context =  {}
-    def __init__(self, input_file, model_dir = '.'):
+    def __init__(self, model_dir = '.'):
         self.MODEL_DIR = model_dir if model_dir else '.'
-        self.input_file = input_file
 
     def load_model(self):
         if hasattr(self, 'data'):
             return
 
+        with open("{}/data.pickle".format(self.MODEL_DIR), "rb") as f:
+            self.words, self.labels, self.training, self.output, self.input_file = pickle.load(f)
+
         with open(self.input_file) as file:
             self.data = json.load(file)
-
-        with open("{}/data.pickle".format(self.MODEL_DIR), "rb") as f:
-            self.words, self.labels, self.training, self.output = pickle.load(f)
         
         tensorflow.reset_default_graph()
         tflearn.init_graph(num_cores=1)
