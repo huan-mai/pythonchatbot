@@ -62,7 +62,7 @@ class Train:
         training, output = self.to_binary_array(words, labels)
 
         with open("{}/data.pickle".format(self.model_dir), "wb") as f:
-            pickle.dump((words, labels, training, output), f)
+            pickle.dump((words, labels, training, output, self.input_file), f)
 
         tensorflow.reset_default_graph()
         tflearn.init_graph(num_cores=1, gpu_memory_fraction=0.5)
