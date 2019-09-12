@@ -48,7 +48,10 @@ class Prediction:
         self.docs_x = []
         self.docs_y = []
         self.context =  {}
-        self.load_model()
+        try:
+            self.load_model()
+        except Exception as e:
+            print('Failed to load model, please train it first. Error {}'.format(e))
     
     def bag_of_words(self, s):
         bag = [0 for _ in range(len(self.words))]
