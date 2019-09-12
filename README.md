@@ -22,6 +22,14 @@ You need python 3.6 or 3.7 and pip
 8. Add **APP_ID** and **APP_SECRET** to **Configuration > Application settings > New application setting**
 9. Go back to **Bot Channels' Settings** and update Endpoint URL e.g. https://pythonchatbot.azurewebsites.net/api/messages
 
+### How to integrate bot to Slack
+Follow this [article](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-slack?view=azure-bot-service-4.0) to integrate the bot to Slack.
+
+**Notes:**
+- We can ignore ["Add and Configure Interactive Messages"](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-slack?view=azure-bot-service-4.0#add-and-configure-interactive-messages-optional) and ["Create an Add to Slack button"](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-slack?view=azure-bot-service-4.0#create-an-add-to-slack-button) step
+- For `{YourBotHandle}` field in ["Subscribe to Bot Events"](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-slack?view=azure-bot-service-4.0#subscribe-to-bot-events) step, we can grab it from `Settings` screen of the `Bot Channels Registration`
+
+
 ### Troubleshooting
 1. If you get `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed` error when running `pip install` command, download the pem file from http://curl.haxx.se/ca/cacert.pem, then run the command with `--cert` parameter. Example: `pip --cert /path/to/cacert.pem install linkchecker`
 (Reference: https://stackoverflow.com/questions/25981703/pip-install-fails-with-connection-error-ssl-certificate-verify-failed-certi/26062583)
