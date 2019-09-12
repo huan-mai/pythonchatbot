@@ -21,7 +21,7 @@ az webapp config appsettings set -g $group -n $webappname --settings APP_ID= APP
 
 # Deploy code from a public GitHub repository. 
 az webapp deployment source config --name $webappname --resource-group $group \
---repo-url $gitrepo --branch context --manual-integration
+--repo-url $gitrepo --branch master --manual-integration
 
 az webapp config set --resource-group $group --name $webappname --startup-file "gunicorn --bind=0.0.0.0 --timeout 600 application:app"
 
