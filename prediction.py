@@ -1,16 +1,14 @@
-import os
-import nltk
-nltk.download('punkt')
-import time
-from nltk.stem.lancaster import LancasterStemmer
-stemmer = LancasterStemmer()
-
 import numpy
 import tflearn
 import tensorflow
 import random
 import json
 import pickle
+import nltk
+from nltk.stem.lancaster import LancasterStemmer
+
+nltk.download('punkt')
+stemmer = LancasterStemmer()
 
 ERROR_THRESHOLD = 0.25
 class Prediction(object):
