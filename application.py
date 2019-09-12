@@ -47,7 +47,8 @@ def webhook():
 @app.route('/api/train', methods=['GET'])
 def train():
     input_file = request.args.get('file');
-    ml = Train(input_file if input_file else intents_file, MODEL_DIR)
+    intents_file = input_file if input_file else intents_file
+    ml = Train(intents_file, MODEL_DIR)
     try:
         ml.training()
         ml_prediction = Prediction(intents_file, MODEL_DIR)
